@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Estoque e Inventário</title>
+    <link rel="stylesheet" href="styles.css">
+   
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sistema de Estoque e Inventário</h1>
+
+    <a href="reports.html" style="display: block; text-align: center; margin-bottom: 20px;">Ver Relatórios</a>
+    
+    <form id="productForm">
+        <input type="text" id="productName" placeholder="Nome do Produto" required>
+        <input type="number" id="productQuantity" placeholder="Quantidade" required>
+        <input type="number" id="productPrice" placeholder="Preço" step="0.01" required>
+        <button type="submit">Adicionar Produto</button>
+    </form>
+
+    <table id="inventoryTable">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Produtos serão inseridos aqui -->
+        </tbody>
+    </table>
+
+    <script>
+        // Funções de banco de dados
+const DB = {
+    saveProducts: function(products) {
+        localStorage.setItem('inventory', JSON.stringify(products));
+    },
+    getProducts: function() {
+        const products = localStorage.getItem('inventory');
+        return products ? JSON.parse(products) : [];
+    }
+};
+
+// Array para armazenar os produtos
+let products = DB.getProducts();
+
+// Função para adicionar um produto
+function addProduct(name, quantity, price) {
+    const product = {
+        id: Date.now(), // Usando timestamp como ID único
+        name,
+        quantity: parseInt(quantity),
+        price: parseFloat(price)
+    };
+    products.push(product);
+    DB.saveProducts(products);
+    updateTable();
+}
+
+// Função para remover um produto
+function removeProduct(id) {
+    products = products.filter(product => product.id !== id);
+    DB.saveProducts(products);
+    updateTable();
+}
+
+// Função para editar um produto
+function editProduct(id, name, quantity, price) {
+    const index = products.findIndex(product => product.id === id);
+    if (index !== -1) {
+        products[index] = {
+            ...products[index],
+            name,
+            quantity: parseInt(quantity),
+            price: parseFloat(price)
+        };
+        DB.saveProducts(products);
+        updateTable();
+    }
+}
+
+// Função para atualizar a tabela
+function updateTable() {
+    const tbody = document.querySelector('#inventoryTable tbody');
+    tbody.innerHTML = '';
+    products.forEach(product => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${product.name}</td>
+            <td>${product.quantity}</td>
+            <td>R$ ${product.price.toFixed(2)}</td>
+            <td>
+                <button onclick="editProductPrompt(${product.id})">Editar</button>
+                <button onclick="removeProduct(${product.id})">Excluir</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Função para mostrar o prompt de edição
+function editProductPrompt(id) {
+    const product = products.find(p => p.id === id);
+    if (product) {
+        const name = prompt('Nome do produto:', product.name);
+        const quantity = prompt('Quantidade:', product.quantity);
+        const price = prompt('Preço:', product.price);
+        if (name && quantity && price) {
+            editProduct(id, name, quantity, price);
+        }
+    }
+}
+
+// Event listener para o formulário
+document.getElementById('productForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('productName').value;
+    const quantity = document.getElementById('productQuantity').value;
+    const price = document.getElementById('productPrice').value;
+    addProduct(name, quantity, price);
+    this.reset();
+});
+
+// Inicializar a tabela
+updateTable();
+    </script>
+    </div>
+    
+</body>
+</html>

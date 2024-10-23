@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios de Estoque</title>
+    <link rel="stylesheet" href="reports-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+<body>
+ 
+    <div class="container">
+        <a href="index.html" class="back-button">Voltar para o Inventário</a>
+        <h1>Relatórios de Estoque</h1>
+        
+        <div class="chart-container">
+            <canvas id="productChart"></canvas>
+        </div>
+        
+        <h2>Produtos com Estoque Baixo</h2>
+        <table id="lowStockTable">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Produtos com estoque baixo serão inseridos aqui -->
+            </tbody>
+        </table>
+        
+        <h2>Produtos com Estoque Zerado</h2>
+        <table id="zeroStockTable">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Produtos com estoque zerado serão inseridos aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="reports.js"></script>
+</body>
+</html>
